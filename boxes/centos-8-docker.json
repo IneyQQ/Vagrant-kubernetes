@@ -2,18 +2,19 @@
 	"builders": [
 		{
 			"type": "vagrant",
-			"source_path": "centos-8",
+			"source_path": "centos/8",
 			"provider": "virtualbox",
 			"communicator": "ssh",
-			"ssh_username": "root",
-			"ssh_password": "vagrant"
+			"ssh_username": "vagrant",
+			"ssh_password": "vagrant",
+			"ssh_wait_timeout": "60s"
 		}
 	],
 	"provisioners": [
 		{
 			"type": "shell",
 			"inline": [
-				"yum install -y git"
+				"sudo yum install -y git"
 			]
 		}
 	]
