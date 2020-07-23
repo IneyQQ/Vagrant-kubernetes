@@ -1,2 +1,3 @@
 **/output-vagrant/**/*
 **/.vagrant/**/*
+**/*.box
