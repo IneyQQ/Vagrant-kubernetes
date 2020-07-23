@@ -4,10 +4,7 @@
 			"type": "vagrant",
 			"source_path": "centos/8",
 			"provider": "virtualbox",
-			"communicator": "ssh",
-			"ssh_username": "vagrant",
-			"ssh_password": "vagrant",
-			"ssh_wait_timeout": "60s"
+			"communicator": "ssh"
 		}
 	],
 	"provisioners": [
