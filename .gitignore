@@ -3,3 +3,4 @@
 **/*.box
 **/packer_cache/**/*
 **/*.uncommented.json
+join_cluster.sh
