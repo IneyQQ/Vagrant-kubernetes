@@ -1,0 +1,41 @@
+{
+	"builders": [
+		{
+			"type": "vagrant",
+			"source_path": "centos-8-docker.box",
+			"provider": "virtualbox",
+			"communicator": "ssh"
+		}
+	],
+	"provisioners": [
+		{
+			"type": "file",
+			"source": "kubernetes.repo",
+			"destination": "kubernetes.repo"
+		},
+		{
+			"type": "shell",
+			"inline": [
+				"sudo setenforce 0",
+				"sudo sed -i --follow-symlinks 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/sysconfig/selinux"
+			]
+		},
+		{
+			"type": "shell",
+			"expect_disconnect": "true",
+			"inline": [
+				"sudo reboot"
+			]
+		},
+		{
+			"type": "shell",
+			"inline": [
+				"sudo systemctl enable firewalld",
+				"echo '1' | sudo tee /proc/sys/net/bridge/bridge-nf-call-iptables",
+				"sudo mv kubernetes.repo /etc/yum.repos.d/kubernetes.repo",
+				"sudo dnf install -y kubeadm",
+				"sudo systemctl enable kubelet"
+			]
+		}
+	]
+}

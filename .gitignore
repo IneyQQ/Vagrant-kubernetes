@@ -1,3 +1,4 @@
 **/output-vagrant/**/*
 **/.vagrant/**/*
 **/*.box
+**/packer_cache/**/*

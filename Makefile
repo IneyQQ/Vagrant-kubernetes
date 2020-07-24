@@ -1,4 +1,4 @@
-boxes: build-boxes
+boxes boxes/: build-boxes
 
 build-boxes:
 	cd boxes && "$(MAKE)" all
