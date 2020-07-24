@@ -1,3 +1,3 @@
-kubeadm join <ip>:6443 --token <token> \
+kubeadm join master.kuber:6443 --token <token> \
   --discovery-token-ca-cert-hash <hash>
 
