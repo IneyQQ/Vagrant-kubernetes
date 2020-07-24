@@ -2,18 +2,14 @@
 	"builders": [
 		{
 			"type": "vagrant",
-			"source_path": "centos-8-docker.box",
+			"source_path": "centos/8",
 			"provider": "virtualbox",
 			"communicator": "ssh"
 		}
 	],
 	"provisioners": [
 		{
-			"type": "file",
-			"source": "kubernetes.repo",
-			"destination": "kubernetes.repo"
-		},
-		{
+			"_comment": "Disable SELinux",
 			"type": "shell",
 			"inline": [
 				"sudo setenforce 0",
@@ -21,6 +17,7 @@
 			]
 		},
 		{
+			"_comment": "Reboot to disable SELinux",
 			"type": "shell",
 			"expect_disconnect": "true",
 			"inline": [
@@ -28,13 +25,35 @@
 			]
 		},
 		{
+			"_comment": "Install docker",
 			"type": "shell",
 			"inline": [
-				"sudo systemctl enable firewalld",
-				"echo '1' | sudo tee /proc/sys/net/bridge/bridge-nf-call-iptables",
+				"sudo dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo",
+				"sudo dnf install -y https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.6-3.3.el7.x86_64.rpm",
+				"sudo dnf install -y docker-ce",
+				"sudo systemctl enable docker"
+			]
+		},
+		{
+			"_comment": "Copy kubernetes repo config",
+			"type": "file",
+			"source": "kubernetes.repo",
+			"destination": "kubernetes.repo"
+		},
+		{
+			"_comment": "Install kubeadm",
+			"type": "shell",
+			"inline": [
 				"sudo mv kubernetes.repo /etc/yum.repos.d/kubernetes.repo",
 				"sudo dnf install -y kubeadm",
 				"sudo systemctl enable kubelet"
+			]
+		},
+		{
+			"_comment": "Enable firewall",
+			"type": "shell",
+			"inline": [
+				"sudo systemctl enable firewalld"
 			]
 		}
 	]

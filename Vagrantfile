@@ -7,7 +7,7 @@ Vagrant.configure("2") do |config|
       v.cpus = 2
       v.memory = 1024
     end
-    config.vm.box = "file://boxes/centos-8-kubernetes-master.box"
+    config.vm.box = "file://boxes/centos-8-kubeadm.box"
     config.vm.network "private_network", ip: "192.169.0.2"
     config.vm.hostname = "master.kuber"
     config.landrush.enabled = true
