@@ -1,4 +1,6 @@
-all: centos-8-kubeadm
+all: save
+
+build: centos-8-kubeadm
 
 centos-8-kubeadm: centos-8-kubeadm.box
 
@@ -12,3 +14,8 @@ centos-8-kubeadm: centos-8-kubeadm.box
 
 %.uncommented.json: %.json
 	jq 'walk(if type == "object" then del(._comment) else . end)' $< > $@
+
+save: centos-8-kubeadm.save
+
+%.save: %
+	vagrant box add --force file://$<.box --name $<
