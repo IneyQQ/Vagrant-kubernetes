@@ -61,11 +61,16 @@
       "_comment": "Enable firewall",
       "type": "shell",
       "inline": [
-        "sudo systemctl enable firewalld"
+				"sudo dnf mark install ipset",
+				"sudo dnf remove -y firewalld",
+				"sudo dnf install -y iptables-services",
+				"sudo iptables -P FORWARD ACCEPT",
+				"sudo iptables-save | sudo tee /etc/sysconfig/iptables > /dev/null",
+        "sudo systemctl enable iptables"
       ]
     },
     {
-      "_comment": "Enable firewall",
+      "_comment": "Install tc for kubernetes",
       "type": "shell",
       "inline": [
 				"sudo dnf install -y iproute-tc"
