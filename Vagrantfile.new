@@ -1,0 +1,64 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+#
+
+master_ip = "192.169.0.2"
+master_dns = "master.kuber"
+Vagrant.configure("2") do |config|
+  config.vm.define "master" do |config|
+    config.vm.provider "virtualbox" do |v|
+      v.cpus = 2
+      v.memory = 2048
+    end
+    config.vm.box = "centos/7"
+    config.vm.network "private_network", ip: master_ip
+    config.vm.hostname = master_dns
+    config.vm.base_mac = nil
+    config.vm.synced_folder ".", "/vagrant", disabled: true
+  end
+  config.vm.define "slave-0" do |config|
+    config.vm.provider "virtualbox" do |v|
+      v.cpus = 1
+      v.memory = 1024
+    end
+    config.vm.box = "centos/7"
+    config.vm.network "private_network", ip: "192.169.0.3"
+    config.vm.hostname = "slave-0.kuber"
+    config.vm.base_mac = nil
+    config.vm.synced_folder ".", "/vagrant", disabled: true
+  end
+  config.vm.define "slave-1" do |config|
+    config.vm.provider "virtualbox" do |v|
+      v.cpus = 1
+      v.memory = 1024
+    end
+    config.vm.box = "centos/7"
+    config.vm.network "private_network", ip: "192.169.0.4"
+    config.vm.hostname = "slave-1.kuber"
+    config.vm.base_mac = nil
+    config.vm.synced_folder ".", "/vagrant", disabled: true
+  end
+
+  config.vm.define "absible" do |config|
+    config.vm.provider "virtualbox" do |v|
+      v.cpus = 1
+      v.memory = 1024
+    end
+    config.vm.box = "centos/7"
+    config.vm.network "private_network", ip: "192.169.0.253"
+    config.vm.hostname = "ansible.kuber"
+    config.vm.base_mac = nil
+    config.vm.synced_folder ".", "/vagrant", disabled: true
+    config.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "~/.ssh/me.pub"
+    config.vm.provision "shell", inline: <<-SHELL
+      cd /home/vagrant/.ssh
+      if [ ! -f authorized_keys.original_vagrant ]; then
+        cp -p authorized_keys authorized_keys.original_vagrant
+      fi
+      cat authorized_keys.original_vagrant me.pub > /home/vagrant/.ssh/authorized_keys
+    SHELL
+    config.vm.provision "shell", inline: <<-SHELL
+      yum install -y git vim
+    SHELL
+  end
+end
